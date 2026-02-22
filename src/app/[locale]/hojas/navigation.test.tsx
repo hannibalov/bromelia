@@ -33,20 +33,15 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-describe('HomePlatform', () => {
-  it('renders the platform title', () => {
+describe('Hojas Navigation', () => {
+  it('shows the Hojas game card on the platform home', () => {
     render(<HomePlatform />);
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Hojas/i })).toBeInTheDocument();
   });
 
-  it('shows a Plantas game card', () => {
+  it('has a link to /hojas', () => {
     render(<HomePlatform />);
-    expect(screen.getAllByText(/Plantas/i).length).toBeGreaterThan(0);
-  });
-
-  it('has a link to /plantas for the Plantas game', () => {
-    render(<HomePlatform />);
-    const link = screen.getByRole('link', { name: /Plantas/i });
-    expect(link).toHaveAttribute('href', '/plantas');
+    const link = screen.getByRole('link', { name: /Hojas/i });
+    expect(link).toHaveAttribute('href', '/hojas');
   });
 });

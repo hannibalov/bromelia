@@ -1,20 +1,32 @@
 import { useState } from 'react';
+import { useI18n } from '../../locales/client';
 
 interface SetupScreenProps {
   onStartGame: (players: { name: string; isAI: boolean }[]) => void;
   initialPlayers?: { name: string; isAI: boolean }[];
+  title?: string;
+  subtitle?: string;
+  instructions?: React.ReactNode;
 }
 
-export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupScreenProps) {
+export default function SetupScreen({ 
+  onStartGame, 
+  initialPlayers = [],
+  title = "Bromelia",
+  subtitle,
+  instructions
+}: SetupScreenProps) {
+  const t = useI18n();
   const [players, setPlayers] = useState(initialPlayers);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [isNewPlayerAI, setIsNewPlayerAI] = useState(false);
+
+  const displaySubtitle = subtitle || t('games.setup.title');
 
   const handleAddPlayer = () => {
     if (newPlayerName.trim()) {
       setPlayers([...players, { name: newPlayerName.trim(), isAI: isNewPlayerAI }]);
       setNewPlayerName('');
-      // Keep same player type for next addition for convenience
     }
   };
 
@@ -30,16 +42,20 @@ export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupS
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-6xl font-bold text-center mb-8 text-green-800">
-          🌱 Plantas 🌱
+          {title}
         </h1>
         
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">Finalizar Configuración</h2>
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">{displaySubtitle}</h2>
           
           <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-3 text-gray-700">Jugadores ({players.length})</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-700">
+              {t('games.setup.players', { count: players.length })}
+            </h3>
             {players.length === 0 ? (
-                <p className="text-gray-400 italic text-center py-4 bg-gray-50 rounded-lg">Añade al menos 2 jugadores para empezar</p>
+                <p className="text-gray-400 italic text-center py-4 bg-gray-50 rounded-lg">
+                  {t('games.setup.noPlayers')}
+                </p>
             ) : (
                 players.map((player, index) => (
                     <div key={index} className="flex items-center justify-between mb-2 p-3 bg-gray-50 rounded-lg">
@@ -53,14 +69,14 @@ export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupS
                             : 'bg-blue-100 text-blue-700 border-2 border-blue-200'
                           }`}
                         >
-                          {player.isAI ? '🤖 AI' : '👤 Humano'}
+                          {player.isAI ? `🤖 ${t('games.setup.ai')}` : `👤 ${t('games.setup.human')}`}
                         </button>
                       </div>
                       <button
                         onClick={() => handleRemovePlayer(index)}
                         className="px-3 py-1 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition font-medium text-sm"
                       >
-                        Eliminar
+                        {t('games.setup.remove')}
                       </button>
                     </div>
                   ))
@@ -68,14 +84,16 @@ export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupS
           </div>
 
           <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-100 mb-6">
-            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Añadir Jugador</h4>
+            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">
+              {t('games.setup.addPlayer')}
+            </h4>
             <div className="flex gap-2">
                 <input
                 type="text"
                 value={newPlayerName}
                 onChange={(e) => setNewPlayerName(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddPlayer()}
-                placeholder="Nombre"
+                placeholder={t('games.setup.namePlaceholder')}
                 className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-lg"
                 />
                 <button
@@ -85,16 +103,15 @@ export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupS
                         ? 'bg-purple-50 border-purple-200 text-purple-700' 
                         : 'bg-blue-50 border-blue-200 text-blue-700'
                     }`}
-                    title={isNewPlayerAI ? 'Cambiar a Humano' : 'Cambiar a AI'}
                 >
-                    {isNewPlayerAI ? '🤖 AI' : '👤'}
+                    {isNewPlayerAI ? `🤖 ${t('games.setup.ai')}` : '👤'}
                 </button>
                 <button
                 onClick={handleAddPlayer}
                 disabled={!newPlayerName.trim()}
                 className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold disabled:opacity-50"
                 >
-                Añadir
+                {t('games.setup.add')}
                 </button>
             </div>
           </div>
@@ -104,23 +121,18 @@ export default function SetupScreen({ onStartGame, initialPlayers = [] }: SetupS
             disabled={players.length < 2}
             className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
-            Empezar Juego
+            {t('games.setup.start')}
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <h3 className="text-2xl font-bold mb-4 text-gray-800">Cómo Jugar</h3>
-          <ul className="space-y-2 text-gray-700">
-            <li>• 200 cartas en el mazo (20 de cada valor 1-10)</li>
-            <li>• Cada turno, guarda tus plantas del jardín primero</li>
-            <li>• Saca cartas una a una</li>
-            <li>• Si tienes menos de 3 cartas en tu jardín, siempre puedes quedarte la carta</li>
-            <li>• Si tienes 3+ cartas y sacas un duplicado, pierdes el turno y el jardín!</li>
-            <li>• Después de sacar, puedes robar cartas iguales de otros jugadores</li>
-            <li>• Termina tu turno o sigue sacando</li>
-            <li>• Gana el jugador con más puntos cuando se acabe el mazo!</li>
-          </ul>
-        </div>
+        {instructions && (
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">{t('games.setup.howToPlay')}</h3>
+            <div className="text-gray-700">
+              {instructions}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

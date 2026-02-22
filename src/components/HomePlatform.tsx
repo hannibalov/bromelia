@@ -1,35 +1,44 @@
+"use client";
+
 import Link from 'next/link';
-
-interface Game {
-  id: string;
-  name: string;
-  emoji: string;
-  description: string;
-  href: string;
-  available: boolean;
-}
-
-const games: Game[] = [
-  {
-    id: 'plantas',
-    name: 'Plantas',
-    emoji: '🌱',
-    description: 'Un juego de cartas con plantas. Recoge tu jardín y acumula puntos antes de que se acabe el mazo.',
-    href: '/plantas',
-    available: true,
-  },
-];
+import { useI18n, useScopedI18n } from '../../locales/client';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function HomePlatform() {
+  const t = useI18n();
+  const scopedT = useScopedI18n('games');
+
+  const games = [
+    {
+      id: 'plantas',
+      name: scopedT('plantas.name'),
+      emoji: '🌱',
+      description: scopedT('plantas.description'),
+      href: '/plantas',
+      available: true,
+    },
+    {
+      id: 'hojas',
+      name: scopedT('hojas.name'),
+      emoji: '🍂',
+      description: scopedT('hojas.description'),
+      href: '/hojas',
+      available: true,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-8">
       <div className="max-w-4xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <LanguageSwitcher />
+        </div>
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold text-green-800 mb-4">🎮 Bromelia</h1>
-          <p className="text-xl text-green-700">Plataforma de juegos de mesa</p>
+          <p className="text-xl text-green-700">{t('home.description')}</p>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-700 mb-6">Juegos disponibles</h2>
+        <h2 className="text-2xl font-bold text-gray-700 mb-6">{t('home.selectGame')}</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {games.map((game) => (
@@ -44,7 +53,7 @@ export default function HomePlatform() {
               <p className="text-gray-600 text-sm leading-relaxed">{game.description}</p>
               <div className="mt-4">
                 <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider">
-                  Jugar →
+                  {t('games.play')} →
                 </span>
               </div>
             </Link>

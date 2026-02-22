@@ -1,8 +1,17 @@
-import { render, waitFor } from '@testing-library/react';
-import Home from '../app/plantas/page';
+import { render, screen, waitFor } from '@testing-library/react';
+import PlantasPage from '../app/[locale]/plantas/page';
 import { useGame } from '../hooks/useGame';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useRouter, useSearchParams } from 'next/navigation';
+
+// Mock locales/client
+vi.mock('../../locales/client', () => ({
+  useI18n: () => (key: string) => key,
+  useScopedI18n: () => (key: string) => key,
+  useChangeLocale: () => vi.fn(),
+  useCurrentLocale: () => 'es',
+  I18nProviderClient: ({ children }: any) => <>{children}</>,
+}));
 
 // Mock useGame hook
 vi.mock('../hooks/useGame');
@@ -26,6 +35,7 @@ describe('Game ID and URL Synchronization', () => {
     turnPhase: 'collect',
     deck: [],
     drawnCard: null,
+    notification: null,
   };
 
   const mockActions = {
@@ -38,6 +48,7 @@ describe('Game ID and URL Synchronization', () => {
     endTurn: vi.fn(),
     continueTurn: vi.fn(),
     acknowledgeLoss: vi.fn(),
+    clearNotification: vi.fn(),
   };
 
   beforeEach(() => {
@@ -53,16 +64,10 @@ describe('Game ID and URL Synchronization', () => {
     
     (useGame as any).mockReturnValue({ ...mockActions, state: stateWithId });
 
-    render(<Home />);
+    render(<PlantasPage />);
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith(expect.stringContaining(`id=${gameId}`));
     });
-  });
-
-  it('should have a generated gameId in state after startGame', () => {
-      // This test is for the hook logic itself
-      // We'll check if START_GAME generates a non-null gameId
-      // (This will be tested in useGame or turnActions if handled there)
   });
 });

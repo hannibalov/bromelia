@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import HomePlatform from '@/components/HomePlatform';
+import Home from '@/app/[locale]/page';
 
 // Mock locales/client
 vi.mock('@/../locales/client', () => ({
@@ -33,19 +33,19 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-describe('HomePlatform', () => {
-  it('renders the platform title', () => {
-    render(<HomePlatform />);
+describe('Platform Home Page', () => {
+  it('renders the platform homepage', () => {
+    render(<Home />);
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
   });
 
-  it('shows a Plantas game card', () => {
-    render(<HomePlatform />);
+  it('shows the Plantas game card', () => {
+    render(<Home />);
     expect(screen.getAllByText(/Plantas/i).length).toBeGreaterThan(0);
   });
 
-  it('has a link to /plantas for the Plantas game', () => {
-    render(<HomePlatform />);
+  it('shows a link to the Plantas game', () => {
+    render(<Home />);
     const link = screen.getByRole('link', { name: /Plantas/i });
     expect(link).toHaveAttribute('href', '/plantas');
   });

@@ -1,7 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import PlantasPage from '@/app/plantas/page';
+import PlantasPage from '@/app/[locale]/plantas/page';
 import { useGame } from '@/hooks/useGame';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock locales/client
+vi.mock('@/../locales/client', () => ({
+  useI18n: () => (key: string) => {
+    const messages: Record<string, string> = {
+      'games.setup.title': 'Finalizar Configuración',
+      'games.finished.title': '¡Fin del Juego!',
+    };
+    return messages[key] || key;
+  },
+  useScopedI18n: (scope: string) => (key: string) => {
+    const messages: Record<string, string> = {
+      'games.plantas.name': 'Plantas',
+    };
+    const fullKey = `${scope}.${key}`;
+    return messages[fullKey] || key;
+  },
+}));
 
 // Mock useGame hook
 vi.mock('@/hooks/useGame');
@@ -24,6 +42,7 @@ describe('Plantas Game Page Rendering', () => {
     turnPhase: 'collect',
     deck: [],
     drawnCard: null,
+    notification: null,
   };
 
   const mockActions = {
@@ -58,6 +77,6 @@ describe('Plantas Game Page Rendering', () => {
   it('should render FinishedScreen when gamePhase is finished', () => {
     (useGame as any).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'finished' } });
     render(<PlantasPage />);
-    expect(screen.getByText(/¡Fin del Juego!/i)).toBeInTheDocument();
+    expect(screen.getByText(/Fin del Juego/i)).toBeInTheDocument();
   });
 });

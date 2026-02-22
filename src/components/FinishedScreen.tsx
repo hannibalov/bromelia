@@ -1,4 +1,5 @@
 import { type Player } from '@/types/game';
+import { useI18n } from '../../locales/client';
 
 interface FinishedScreenProps {
   players: Player[];
@@ -6,6 +7,7 @@ interface FinishedScreenProps {
 }
 
 export default function FinishedScreen({ players, onRestart }: FinishedScreenProps) {
+  const t = useI18n();
   const winner = players.reduce((prev, current) => 
     current.score > prev.score ? current : prev
   );
@@ -14,15 +16,15 @@ export default function FinishedScreen({ players, onRestart }: FinishedScreenPro
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-6xl font-bold text-center mb-8 text-green-800">
-          🏆 ¡Fin del Juego! 🏆
+          🏆 {t('games.finished.title')} 🏆
         </h1>
         
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
           <h2 className="text-4xl font-bold text-center mb-6 text-green-700">
-            ¡{winner.name} Gana!
+            {t('games.finished.winner', { name: winner.name })}
           </h2>
           <p className="text-2xl text-center mb-8 text-gray-600">
-            Puntuación Final: {winner.score} puntos
+            {t('games.finished.score', { score: winner.score })}
           </p>
 
           <div className="space-y-4">
@@ -50,7 +52,7 @@ export default function FinishedScreen({ players, onRestart }: FinishedScreenPro
             onClick={onRestart}
             className="w-full mt-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition font-bold text-xl shadow-lg"
           >
-            Jugar de Nuevo
+            {t('games.finished.restart')}
           </button>
         </div>
       </div>
