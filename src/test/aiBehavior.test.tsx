@@ -2,6 +2,21 @@ import { renderHook, act } from '@testing-library/react';
 import { useGame } from '../hooks/useGame';
 import { describe, it, expect, vi } from 'vitest';
 
+vi.mock('@/../locales/client', () => ({
+  useI18n: () => (key: string, params?: Record<string, string | number>) => {
+    const messages: Record<string, string> = {
+      'games.plantas.notif.gameStart': `Game starts! ${params?.name ?? ''}'s turn`,
+      'games.plantas.notif.collecting': 'is collecting their garden...',
+      'games.plantas.notif.drawing': 'is about to draw a card...',
+      'games.plantas.notif.stealing': `steals from ${params?.name ?? ''}`,
+      'games.plantas.notif.continue': 'decides to continue...',
+      'games.plantas.notif.endTurn': 'ends their turn',
+      'games.plantas.notif.lostTurn': 'has lost their turn',
+    };
+    return messages[key] ?? key;
+  },
+}));
+
 // We need to mock timers for artificial AI delay
 vi.useFakeTimers();
 

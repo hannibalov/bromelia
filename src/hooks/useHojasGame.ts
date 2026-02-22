@@ -3,6 +3,7 @@
 import { useReducer, useCallback, useEffect, useRef } from 'react';
 import type { HojasGameState, HojasGameAction, HojasPlayer } from '@/types/hojas';
 import { createHojasDeck, processSelection, calculateWinner } from '@/utils/hojasLogic';
+import { useI18n } from '@/../locales/client';
 
 const initialState: HojasGameState = {
     gameId: null,
@@ -14,7 +15,8 @@ const initialState: HojasGameState = {
     notification: null,
 };
 
-function hojasReducer(state: HojasGameState, action: HojasGameAction): HojasGameState {
+function createHojasReducer(t: ReturnType<typeof useI18n>) {
+    return function hojasReducer(state: HojasGameState, action: HojasGameAction): HojasGameState {
     switch (action.type) {
         case 'START_GAME': {
             const { playersInfo } = action.payload;
@@ -37,7 +39,7 @@ function hojasReducer(state: HojasGameState, action: HojasGameAction): HojasGame
                 currentPlayerIndex: 0,
                 selection: null,
                 notification: {
-                    message: `¡Empieza la partida! Turno de ${players[0].name}`,
+                    message: t('games.hojas.notif.gameStart', { name: players[0].name }),
                     type: 'info',
                     visible: true,
                 },
@@ -50,13 +52,12 @@ function hojasReducer(state: HojasGameState, action: HojasGameAction): HojasGame
 
             const newState = processSelection(leaf, state);
 
-            // Check if game is over
             if (newState.leaves.length === 0) {
                 return {
                     ...newState,
                     gamePhase: 'finished',
                     notification: {
-                        message: '¡Juego terminado!',
+                        message: t('games.hojas.notif.gameOver'),
                         type: 'success',
                         visible: true,
                     }
@@ -89,9 +90,12 @@ function hojasReducer(state: HojasGameState, action: HojasGameAction): HojasGame
         default:
             return state;
     }
+};
 }
 
 export function useHojasGame() {
+    const t = useI18n();
+    const hojasReducer = useCallback(createHojasReducer(t), [t]);
     const [state, dispatch] = useReducer(hojasReducer, initialState);
     const processingAiAction = useRef(false);
 

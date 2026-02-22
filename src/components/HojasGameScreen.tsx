@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { HojasGameState } from '@/types/hojas';
 import { canPickLeaf } from '@/utils/hojasLogic';
 import Snackbar from './Snackbar';
+import { useI18n } from '@/../locales/client';
 
 interface HojasGameScreenProps {
   state: HojasGameState;
@@ -13,6 +14,7 @@ interface HojasGameScreenProps {
 }
 
 export default function HojasGameScreen({ state, onPickLeaf, onClearNotification }: HojasGameScreenProps) {
+  const t = useI18n();
   const currentPlayer = state.players[state.currentPlayerIndex];
 
   return (
@@ -21,17 +23,22 @@ export default function HojasGameScreen({ state, onPickLeaf, onClearNotification
       <div className="p-2 sm:p-4 bg-white shadow-md flex flex-wrap justify-between items-center z-40">
         <div className="mb-2 sm:mb-0">
           <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            🍂 <span className="hidden xs:inline">Turno de:</span> <span className="text-green-700">{currentPlayer.name}</span>
+            🍂 <span className="hidden xs:inline">{t('games.hojas.turnOf')}</span> <span className="text-green-700">{currentPlayer.name}</span>
           </h2>
           <p className="text-xs sm:text-sm text-gray-500 max-w-md">
-            {state.selection ? `Has cogido un ${state.selection.type}. Busca la pareja de color ${state.selection.color}.` : 'Selecciona una hoja suelta de la mesa.'}
+            {state.selection
+              ? t('games.hojas.selectionPrompt', {
+                  type: t(`games.hojas.leafType.${state.selection.type}`),
+                  color: t(`games.hojas.leafColor.${state.selection.color}`),
+                })
+              : t('games.hojas.selectLeaf')}
           </p>
         </div>
         <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-1">
           {state.players.map((p, idx) => (
             <div key={p.id} className={`p-1 sm:p-2 rounded-lg border-2 flex-shrink-0 ${idx === state.currentPlayerIndex ? 'border-green-500 bg-green-50' : 'border-transparent'}`}>
               <div className="font-bold text-xs sm:text-base">{p.name} {p.isAI ? '🤖' : '👤'}</div>
-              <div className="text-[10px] sm:text-xs text-gray-600">Parejas: {p.collectedPairs.length} | Sueltas: {p.singleLeaves.length}</div>
+              <div className="text-[10px] sm:text-xs text-gray-600">{t('games.hojas.pairs')}: {p.collectedPairs.length} | {t('games.hojas.singles')}: {p.singleLeaves.length}</div>
             </div>
           ))}
         </div>

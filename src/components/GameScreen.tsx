@@ -3,6 +3,7 @@ import ActionPanel from './ActionPanel';
 import PlayerGarden from './PlayerGarden';
 import Snackbar from './Snackbar';
 import { findMatchingCards } from '@/utils/gameLogic';
+import { useI18n } from '@/../locales/client';
 
 interface GameScreenProps {
   state: GameState;
@@ -27,6 +28,7 @@ export default function GameScreen({
   onAcknowledgeLoss,
   onClearNotification,
 }: GameScreenProps) {
+  const t = useI18n();
   const currentPlayer = state.players[state.currentPlayerIndex];
 
   // Check if anyone has matching cards to steal
@@ -38,13 +40,17 @@ export default function GameScreen({
       )
     : [];
   const canStealFromAnyone = validStealTargets.length > 0;
-  const singleStealTargetId = validStealTargets.length === 1 ? validStealTargets[0].id : null;
+  const isStealPhase = state.turnPhase === 'steal' && state.drawnCard;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 pb-48 md:p-8 md:pb-8">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 md:p-8 ${
+        isStealPhase ? 'pb-28 md:pb-8' : 'pb-48 md:pb-8'
+      }`}
+    >
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-green-800">
-          🌱 Plantas 🌱
+          🌱 {t('games.plantas.turnTitle')} 🌱
         </h1>
 
         <Snackbar 
@@ -79,12 +85,10 @@ export default function GameScreen({
           drawnCard={state.drawnCard}
           turnPhase={state.turnPhase}
           canStealFromEveryone={canStealFromAnyone}
-          singleStealTargetId={singleStealTargetId}
           gardenEmpty={state.turnPhase === 'collect' && (currentPlayer?.garden.length ?? 0) === 0}
           onCollect={onCollect}
           onDraw={onDraw}
           onKeep={onKeep}
-          onSteal={singleStealTargetId ? () => onStealColor(singleStealTargetId) : undefined}
           onContinue={onContinue}
           onEndTurn={onEndTurn}
           onAcknowledgeLoss={onAcknowledgeLoss}

@@ -5,12 +5,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock locales/client
 vi.mock('@/../locales/client', () => ({
-  useI18n: () => (key: string) => {
+  useI18n: () => (key: string, params?: Record<string, string | number>) => {
     const messages: Record<string, string> = {
       'games.setup.title': 'Finalizar Configuración',
       'games.finished.title': '¡Fin del Juego!',
+      'games.plantas.turnTitle': 'Plantas',
+      'games.plantas.turnOf': 'Turno de',
+      'games.plantas.score': 'Puntos',
+      'games.plantas.garden': `Jardín (${params?.count ?? 0})`,
+      'games.plantas.saved': `Guardadas (${params?.count ?? 0})`,
+      'games.plantas.empty': 'Vacío',
+      'games.plantas.deckAlt': 'Mazo',
+      'games.plantas.drawFirst': 'Sacar Primera Carta',
     };
-    return messages[key] || key;
+    return messages[key] ?? key;
   },
   useScopedI18n: (scope: string) => (key: string) => {
     const messages: Record<string, string> = {

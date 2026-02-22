@@ -5,6 +5,7 @@ import { type GameState, type GameAction, type Player } from '@/types/game';
 import { createDeck } from '@/utils/gameLogic';
 import { actionDrawCard, actionStealCards, actionKeepCard, actionAcknowledgeLoss, actionEndTurn, actionContinueTurn } from '@/utils/turnActions';
 import { actionCollectGarden } from '@/utils/drawLogic';
+import { useI18n } from '@/../locales/client';
 
 const initialState: GameState = {
     gameId: null,
@@ -19,7 +20,8 @@ const initialState: GameState = {
     notification: null,
 };
 
-function gameReducer(state: GameState, action: GameAction): GameState {
+function createGameReducer(t: ReturnType<typeof useI18n>) {
+    return function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case 'START_GAME': {
             const { playersInfo } = action.payload;
@@ -44,7 +46,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
                 currentPlayerIndex: 0,
                 isFirstDraw: true,
                 notification: {
-                    message: `¡Empieza la partida! Turno de ${players[0].name}`,
+                    message: t('games.plantas.notif.gameStart', { name: players[0].name }),
                     type: 'info',
                     visible: true
                 }
@@ -108,9 +110,12 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         default:
             return state;
     }
+};
 }
 
 export function useGame() {
+    const t = useI18n();
+    const gameReducer = useCallback(createGameReducer(t), [t]);
     const [state, dispatch] = useReducer(gameReducer, initialState);
     const processingAiAction = useRef(false);
 
@@ -182,12 +187,12 @@ export function useGame() {
 
             if (state.turnPhase === 'collect' && !state.drawnCard) {
                 if (currentPlayer.garden.length === 0) {
-                    performAction('va a sacar una carta...', drawCard);
+                    performAction(t('games.plantas.notif.drawing'), drawCard);
                 } else {
-                    performAction('está recogiendo su jardín...', collectGarden);
+                    performAction(t('games.plantas.notif.collecting'), collectGarden);
                 }
             } else if (state.turnPhase === 'draw' && !state.drawnCard) {
-                performAction('va a sacar una carta...', drawCard);
+                performAction(t('games.plantas.notif.drawing'), drawCard);
             } else if (state.turnPhase === 'steal' && state.drawnCard) {
                 // Find the best target: most matching cards, tiebreak by score
                 const cardValue = state.drawnCard.value;
@@ -203,24 +208,23 @@ export function useGame() {
                         if (currCount === bestCount && curr.p.score > best.p.score) return curr;
                         return best;
                     });
-                    performAction(`le roba a ${bestTarget.p.name}`, () => stealCards(bestTarget.p.id));
+                    performAction(t('games.plantas.notif.stealing', { name: bestTarget.p.name }), () => stealCards(bestTarget.p.id));
                 } else {
-                    // No valid targets (shouldn't happen in steal phase, but guard anyway)
-                    performAction('decide continuar...', continueTurn);
+                    performAction(t('games.plantas.notif.continue'), continueTurn);
                 }
             } else if (state.turnPhase === 'decide') {
                 if (currentPlayer.garden.length < 5 && state.deck.length > 0) {
-                    performAction('decide continuar...', continueTurn);
+                    performAction(t('games.plantas.notif.continue'), continueTurn);
                 } else {
-                    performAction('termina su turno', endTurn);
+                    performAction(t('games.plantas.notif.endTurn'), endTurn);
                 }
             } else if (state.turnPhase === 'lost') {
-                performAction('ha perdido el turno', acknowledgeLoss);
+                performAction(t('games.plantas.notif.lostTurn'), acknowledgeLoss);
             }
         }, 1000); // Initial "thinking" delay
 
         return () => clearTimeout(timeoutId);
-    }, [state, collectGarden, drawCard, stealCards, endTurn, continueTurn, acknowledgeLoss]);
+    }, [state, t, collectGarden, drawCard, stealCards, endTurn, continueTurn, acknowledgeLoss]);
 
     // Reset lock when player changes
     useEffect(() => {

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { type Player as PlayerType } from '@/types/game';
 import Card from './Card';
 import { groupGardenCards } from '@/utils/gameLogic';
+import { useI18n } from '@/../locales/client';
 
 interface PlayerGardenProps {
   player: PlayerType;
@@ -16,6 +17,7 @@ export default function PlayerGarden({
   onStealCards,
   canSteal = false 
 }: PlayerGardenProps) {
+  const t = useI18n();
   const groupedCards = groupGardenCards(player.garden);
   const gardenRef = useRef<HTMLDivElement>(null);
 
@@ -46,18 +48,18 @@ export default function PlayerGarden({
           {isCurrentPlayer && <span className="ml-1 text-green-600">★</span>}
         </h3>
         <div className="text-right flex items-center gap-2">
-          <p className="text-[10px] md:text-xs text-gray-500 uppercase font-semibold">Score</p>
+          <p className="text-[10px] md:text-xs text-gray-500 uppercase font-semibold">{t('games.plantas.score')}</p>
           <p className="text-xl md:text-2xl font-bold text-green-700">{player.score}</p>
         </div>
       </div>
 
       <div className="mb-2">
         <p className="text-[10px] md:text-xs text-gray-500 mb-1">
-          Garden ({player.garden.length})
+          {t('games.plantas.garden', { count: player.garden.length })}
         </p>
         <div className="flex flex-wrap gap-2">
           {player.garden.length === 0 ? (
-            <p className="text-xs text-gray-400 italic">Empty</p>
+            <p className="text-xs text-gray-400 italic">{t('games.plantas.empty')}</p>
           ) : (
             Object.entries(groupedCards).map(([value, cards]) => (
               <div key={value} className="relative group">
@@ -79,7 +81,7 @@ export default function PlayerGarden({
                   ))}
                 </div>
                 {cards.length > 1 && (
-                  <div className="absolute -top-1 -right-1 bg-green-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shadow-md z-50">
+                  <div className="absolute -top-1 -right-1 bg-green-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shadow-md z-10">
                     x{cards.length}
                   </div>
                 )}
@@ -91,7 +93,7 @@ export default function PlayerGarden({
 
       <div>
         <p className="text-[10px] md:text-xs text-gray-500 mb-1">
-          Saved ({player.savedCards.length})
+          {t('games.plantas.saved', { count: player.savedCards.length })}
         </p>
         <div className="flex gap-1 flex-wrap">
           {player.savedCards.map((card, idx) => (
@@ -108,7 +110,7 @@ export default function PlayerGarden({
       {canSteal && (
         <div className="mt-2 text-center">
           <p className="text-xs text-yellow-700 font-semibold animate-pulse">
-            ¡Pulsa para robar!
+            {t('games.plantas.clickToSteal')}
           </p>
         </div>
       )}

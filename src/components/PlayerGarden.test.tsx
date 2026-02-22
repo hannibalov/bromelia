@@ -3,6 +3,19 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import PlayerGarden from './PlayerGarden';
 import { type Player } from '@/types/game';
 
+vi.mock('@/../locales/client', () => ({
+  useI18n: () => (key: string, params?: Record<string, string | number>) => {
+    const messages: Record<string, string> = {
+      'games.plantas.score': 'Score',
+      'games.plantas.garden': `Garden (${params?.count ?? 0})`,
+      'games.plantas.saved': `Saved (${params?.count ?? 0})`,
+      'games.plantas.empty': 'Empty',
+      'games.plantas.clickToSteal': 'Click to steal!',
+    };
+    return messages[key] ?? key;
+  },
+}));
+
 describe('PlayerGarden', () => {
   const mockPlayer: Player = {
     id: 'p1',
