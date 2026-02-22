@@ -17,6 +17,12 @@ export interface Player {
     score: number;
 }
 
+export interface Notification {
+    message: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    visible: boolean;
+}
+
 export interface GameState {
     gameId: string | null;
     players: Player[];
@@ -27,27 +33,18 @@ export interface GameState {
     turnPhase: 'collect' | 'draw' | 'steal' | 'decide' | 'lost';
     drawnCard: Card | null; // Currently drawn card
     isFirstDraw: boolean; // Flag to secure garden at start of turn
-    notification: {
-        message: string;
-        type: 'info' | 'success' | 'warning' | 'error';
-        visible: boolean;
-    } | null;
+    notification: Notification | null;
 }
 
-export interface GameAction {
-    type:
-    | 'START_GAME'
-    | 'COLLECT_GARDEN'
-    | 'DRAW_CARD'
-    | 'KEEP_CARD'
-    | 'STEAL_CARDS'
-    | 'END_TURN'
-    | 'CONTINUE_TURN'
-    | 'LOSE_TURN'
-    | 'ACKNOWLEDGE_LOSS'
-    | 'ACKNOWLEDGE_LOSS'
-    | 'AI_MOVE_DELAY'
-    | 'SET_NOTIFICATION'
-    | 'CLEAR_NOTIFICATION';
-    payload?: unknown;
-}
+export type GameAction =
+    | { type: 'START_GAME'; payload: { playersInfo: { name: string; isAI: boolean }[] } }
+    | { type: 'COLLECT_GARDEN' }
+    | { type: 'DRAW_CARD' }
+    | { type: 'KEEP_CARD' }
+    | { type: 'STEAL_CARDS'; payload: { targetPlayerId: string } }
+    | { type: 'END_TURN' }
+    | { type: 'CONTINUE_TURN' }
+    | { type: 'ACKNOWLEDGE_LOSS' }
+    | { type: 'AI_MOVE_DELAY' }
+    | { type: 'SET_NOTIFICATION'; payload: Notification }
+    | { type: 'CLEAR_NOTIFICATION' };

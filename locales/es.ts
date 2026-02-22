@@ -43,5 +43,6 @@ export default {
     "games.hojas.instructions.item6": "¡Gana quien consiga más parejas!",
     "games.setup.human": "Humano",
     "games.setup.ai": "AI",
-    "games.setup.howToPlay": "Cómo Jugar"
+    "games.setup.howToPlay": "Cómo Jugar",
+    "games.play": "Jugar"
 } as const;

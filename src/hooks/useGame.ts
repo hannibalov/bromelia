@@ -22,7 +22,7 @@ const initialState: GameState = {
 function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case 'START_GAME': {
-            const { playersInfo } = action.payload as { playersInfo: { name: string; isAI: boolean }[] };
+            const { playersInfo } = action.payload;
             const deck = createDeck();
             const gameId = crypto.randomUUID();
             const players: Player[] = playersInfo.map((info, index: number) => ({

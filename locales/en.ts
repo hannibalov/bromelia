@@ -43,5 +43,6 @@ export default {
     "games.hojas.instructions.item6": "The player with the most pairs wins!",
     "games.setup.human": "Human",
     "games.setup.ai": "AI",
-    "games.setup.howToPlay": "How to Play"
+    "games.setup.howToPlay": "How to Play",
+    "games.play": "Play"
 } as const;
