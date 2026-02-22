@@ -32,14 +32,6 @@ export default function GameScreen({
   const currentPlayer = state.players[state.currentPlayerIndex];
 
   // Check if anyone has matching cards to steal
-  const validStealTargets = state.drawnCard
-    ? state.players.filter(
-        (p, idx) =>
-          idx !== state.currentPlayerIndex &&
-          findMatchingCards(p.garden, state.drawnCard!.value).length > 0
-      )
-    : [];
-  const canStealFromAnyone = validStealTargets.length > 0;
   const isStealPhase = state.turnPhase === 'steal' && state.drawnCard;
 
   return (
@@ -84,7 +76,6 @@ export default function GameScreen({
           deckCount={state.deck.length}
           drawnCard={state.drawnCard}
           turnPhase={state.turnPhase}
-          canStealFromEveryone={canStealFromAnyone}
           gardenEmpty={state.turnPhase === 'collect' && (currentPlayer?.garden.length ?? 0) === 0}
           onCollect={onCollect}
           onDraw={onDraw}
