@@ -21,12 +21,9 @@ export default function PlayerGarden({
 
   useEffect(() => {
     if (isCurrentPlayer && gardenRef.current) {
-      // Check if we are on a mobile device (using window width < 768px for md breakpoint)
-      if (window.innerWidth < 768) {
         setTimeout(() => {
-          gardenRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            gardenRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 100);
-      }
     }
   }, [isCurrentPlayer]);
 
@@ -77,7 +74,7 @@ export default function PlayerGarden({
                       }}
                       className="transition-all duration-300 group-hover:translate-x-1"
                     >
-                      <Card card={card} className="w-20 h-28 md:w-24 md:h-34" />
+                      <Card card={card} className="w-16 h-24 sm:w-20 sm:h-28 md:w-24 md:h-32" />
                     </div>
                   ))}
                 </div>

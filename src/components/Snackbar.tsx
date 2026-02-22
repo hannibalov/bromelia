@@ -34,7 +34,7 @@ export default function Snackbar({
   };
 
   return (
-    <div className="fixed top-12 left-0 right-0 px-4 md:top-24 md:left-1/2 md:-translate-x-1/2 md:w-auto md:px-0 z-50 animate-bounce flex justify-center">
+    <div className="fixed top-24 left-0 right-0 px-4 md:top-24 md:left-1/2 md:-translate-x-1/2 md:w-auto md:px-0 z-50 animate-bounce flex justify-center">
       <div className={`${bgColors[type]} w-full md:w-auto text-white px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2 border-2 border-white`}>
         <span className="text-xl font-bold">
             {type === 'info' && '📢'}

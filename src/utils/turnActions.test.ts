@@ -148,7 +148,7 @@ describe('turnActions', () => {
             expect(newState.drawnCard).toBeNull();
         });
 
-        it('should steal ALL cards of matching value from ALL players', () => {
+        it('should steal ALL cards of matching value from the targeted player', () => {
             const state = createInitialState();
             state.drawnCard = mockCard('drawn', 5);
             state.players = [
@@ -157,11 +157,11 @@ describe('turnActions', () => {
                 { id: 'p3', name: 'P3', isAI: false, garden: [mockCard('p3c1', 5)], savedCards: [], score: 0 },
             ];
 
-            const newState = actionStealCards(state);
+            const newState = actionStealCards(state, 'p2');
 
-            expect(newState.players[0].garden).toHaveLength(4); // 1 drawn + 2 from P2 + 1 from P3
+            expect(newState.players[0].garden).toHaveLength(3); // 1 drawn + 2 from P2
             expect(newState.players[1].garden).toHaveLength(0);
-            expect(newState.players[2].garden).toHaveLength(0);
+            expect(newState.players[2].garden).toHaveLength(1); // p3 untouched
             expect(newState.players[0].garden.every(c => c.value === 5)).toBe(true);
         });
     });
@@ -188,7 +188,7 @@ describe('turnActions', () => {
             expect(state.turnPhase).toBe('steal'); // P2 has a '1'
 
             // 4. Steal cards
-            state = actionStealCards(state);
+            state = actionStealCards(state, 'p2');
             expect(state.players[0].garden).toHaveLength(3); // 1st draw(5) + 2nd draw(1) + stolen(1)
             expect(state.players[1].garden).toHaveLength(0);
             expect(state.turnPhase).toBe('decide');
@@ -222,7 +222,7 @@ describe('turnActions', () => {
         state.drawnCard = mockCard('drawn', 5);
         state.players[1].garden = [mockCard('p2c1', 5)];
 
-        const newState = actionStealCards(state);
+        const newState = actionStealCards(state, 'p2');
         expect(newState.players[0].garden).toHaveLength(2); // drawn + stolen
         expect(newState.players[1].garden).toHaveLength(0);
         expect(newState.turnPhase).toBe('decide');
@@ -249,7 +249,7 @@ describe('turnActions', () => {
             state.players[1].garden = [mockCard('stolen1', 5)];
             state.turnPhase = 'steal';
 
-            const newState = actionStealCards(state);
+            const newState = actionStealCards(state, 'p2');
 
             expect(newState.players[0].garden).toContainEqual(cardToDraw);
             expect(newState.players[0].garden.some(c => c.id === 'stolen1')).toBe(true);

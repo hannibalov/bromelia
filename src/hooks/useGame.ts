@@ -64,7 +64,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         }
 
         case 'STEAL_CARDS': {
-            return actionStealCards(state);
+            return actionStealCards(state, action.payload.targetPlayerId);
         }
 
         case 'ACKNOWLEDGE_LOSS': {
@@ -185,7 +185,25 @@ export function useGame() {
             } else if (state.turnPhase === 'draw' && !state.drawnCard) {
                 performAction('va a sacar una carta...', drawCard);
             } else if (state.turnPhase === 'steal' && state.drawnCard) {
-                performAction('¡te está robando cartas!', () => stealCards(''));
+                // Find the best target: most matching cards, tiebreak by score
+                const cardValue = state.drawnCard.value;
+                const validTargets = state.players
+                    .map((p, idx) => ({ p, idx }))
+                    .filter(({ p, idx }) => idx !== state.currentPlayerIndex && p.garden.some(c => c.value === cardValue));
+
+                if (validTargets.length > 0) {
+                    const bestTarget = validTargets.reduce((best, curr) => {
+                        const bestCount = best.p.garden.filter(c => c.value === cardValue).length;
+                        const currCount = curr.p.garden.filter(c => c.value === cardValue).length;
+                        if (currCount > bestCount) return curr;
+                        if (currCount === bestCount && curr.p.score > best.p.score) return curr;
+                        return best;
+                    });
+                    performAction(`le roba a ${bestTarget.p.name}`, () => stealCards(bestTarget.p.id));
+                } else {
+                    // No valid targets (shouldn't happen in steal phase, but guard anyway)
+                    performAction('decide continuar...', continueTurn);
+                }
             } else if (state.turnPhase === 'decide') {
                 if (currentPlayer.garden.length < 5 && state.deck.length > 0) {
                     performAction('decide continuar...', continueTurn);

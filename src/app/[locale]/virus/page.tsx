@@ -56,17 +56,25 @@ export default function VirusPage() {
           <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Turno de</p>
           <p className="text-2xl font-black text-emerald-700">{currentPlayer.name}</p>
         </div>
-        <div className="flex gap-4">
-          {state.players.map((p, idx) => (
-            <div key={p.id} className={`p-2 rounded-lg border-2 ${idx === state.currentPlayerIndex ? 'border-emerald-500 bg-emerald-50' : 'border-transparent opacity-60'}`}>
-              <p className="font-bold text-sm">{p.name}</p>
-              <p className="text-xs flex gap-1">
-                {p.board.map((bp, i) => (
-                   <span key={i} className={`w-3 h-3 rounded-full ${bp.status === 'healthy' ? 'bg-green-500' : bp.status === 'infected' ? 'bg-red-500' : bp.status === 'vaccinated' ? 'bg-blue-500' : 'bg-yellow-400 border border-yellow-600'}`}></span>
-                ))}
-              </p>
-            </div>
-          ))}
+        <div className="flex gap-4 items-center">
+          <div className="relative w-12 h-16 md:w-16 md:h-24 shadow-md rounded-lg overflow-hidden border-2 border-stone-200 shrink-0">
+             <Image src="/virus/back.png" alt="Mazo" fill className="object-cover opacity-90" />
+             <div className="absolute -top-2 -right-2 bg-red-600 text-white min-w-[20px] h-[20px] flex items-center justify-center rounded-full text-[10px] font-bold border border-white shadow-sm z-10 px-1">
+                {state.deck.length}
+             </div>
+          </div>
+          <div className="flex gap-2">
+            {state.players.map((p, idx) => (
+              <div key={p.id} className={`p-2 rounded-lg border-2 ${idx === state.currentPlayerIndex ? 'border-emerald-500 bg-emerald-50' : 'border-transparent opacity-60'}`}>
+                <p className="font-bold text-sm">{p.name}</p>
+                <p className="text-xs flex gap-1 mt-1">
+                  {p.board.map((bp, i) => (
+                     <span key={i} className={`w-3 h-3 rounded-full ${bp.status === 'healthy' ? 'bg-green-500' : bp.status === 'infected' ? 'bg-red-500' : bp.status === 'vaccinated' ? 'bg-blue-500' : 'bg-yellow-400 border border-yellow-600'}`}></span>
+                  ))}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

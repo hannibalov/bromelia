@@ -87,7 +87,7 @@ export default function SetupScreen({
             <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">
               {t('games.setup.addPlayer')}
             </h4>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
                 <input
                 type="text"
                 value={newPlayerName}
@@ -96,23 +96,25 @@ export default function SetupScreen({
                 placeholder={t('games.setup.namePlaceholder')}
                 className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-lg"
                 />
-                <button
-                    onClick={() => setIsNewPlayerAI(!isNewPlayerAI)}
-                    className={`px-4 rounded-lg flex items-center gap-2 border-2 transition font-bold ${
-                        isNewPlayerAI 
-                        ? 'bg-purple-50 border-purple-200 text-purple-700' 
-                        : 'bg-blue-50 border-blue-200 text-blue-700'
-                    }`}
-                >
-                    {isNewPlayerAI ? `🤖 ${t('games.setup.ai')}` : '👤'}
-                </button>
-                <button
-                onClick={handleAddPlayer}
-                disabled={!newPlayerName.trim()}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold disabled:opacity-50"
-                >
-                {t('games.setup.add')}
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setIsNewPlayerAI(!isNewPlayerAI)}
+                        className={`px-4 py-3 rounded-lg flex-1 sm:flex-none flex items-center justify-center gap-2 border-2 transition font-bold ${
+                            isNewPlayerAI 
+                            ? 'bg-purple-50 border-purple-200 text-purple-700' 
+                            : 'bg-blue-50 border-blue-200 text-blue-700'
+                        }`}
+                    >
+                        {isNewPlayerAI ? `🤖 ${t('games.setup.ai')}` : '👤'}
+                    </button>
+                    <button
+                    onClick={handleAddPlayer}
+                    disabled={!newPlayerName.trim()}
+                    className="px-6 py-3 bg-green-600 flex-1 sm:flex-none text-white rounded-lg hover:bg-green-700 transition font-bold disabled:opacity-50"
+                    >
+                    {t('games.setup.add')}
+                    </button>
+                </div>
             </div>
           </div>
 

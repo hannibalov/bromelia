@@ -39,7 +39,7 @@ describe('Game Turn Integration', () => {
         expect(state.drawnCard?.value).toBe(5);
 
         // 2. P1 Steals from P2
-        state = actionStealCards(state);
+        state = actionStealCards(state, 'p2');
         expect(state.players[0].garden).toHaveLength(2); // drawn 5 + stolen 5
         expect(state.players[1].garden).toHaveLength(0);
         expect(state.turnPhase).toBe('decide');

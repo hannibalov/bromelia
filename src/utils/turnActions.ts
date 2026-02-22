@@ -70,13 +70,14 @@ export function actionDrawCard(state: GameState): GameState {
 /**
  * High-level action for stealing cards.
  */
-export function actionStealCards(state: GameState): GameState {
+export function actionStealCards(state: GameState, targetPlayerId: string): GameState {
     if (!state.drawnCard) return state;
 
     const { updatedPlayers, stolenCards } = executeSteal(
         state.players,
         state.currentPlayerIndex,
-        state.drawnCard.value
+        state.drawnCard.value,
+        targetPlayerId
     );
 
     const finalPlayers = updatedPlayers.map((p, idx) => {

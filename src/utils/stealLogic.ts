@@ -2,18 +2,19 @@ import type { Card, Player, CardValue } from '@/types/game';
 import { findMatchingCards } from './gameLogic';
 
 /**
- * Executes a steal operation: removes matching cards from all other players
+ * Executes a steal operation: removes matching cards from the targeted player
  * and returns them along with the updated player list.
  */
 export function executeSteal(
     players: Player[],
     currentPlayerIndex: number,
-    cardValue: CardValue
+    cardValue: CardValue,
+    targetPlayerId: string
 ): { updatedPlayers: Player[]; stolenCards: Card[] } {
     const stolenCards: Card[] = [];
 
     const updatedPlayers = players.map((p, idx) => {
-        if (idx === currentPlayerIndex) return p;
+        if (idx === currentPlayerIndex || p.id !== targetPlayerId) return p;
 
         const matches = findMatchingCards(p.garden, cardValue);
         if (matches.length > 0) {
