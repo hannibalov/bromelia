@@ -1,0 +1,94 @@
+import { type GameState } from '@/types/game';
+import GameHeader from './GameHeader';
+import ActionPanel from './ActionPanel';
+import PlayerGarden from './PlayerGarden';
+import Snackbar from './Snackbar';
+import { findMatchingCards } from '@/utils/gameLogic';
+
+interface GameScreenProps {
+  state: GameState;
+  onCollect: () => void;
+  onDraw: () => void;
+  onKeep: () => void;
+  onStealColor: (id: string) => void; // Keeping original signature just in case
+  onEndTurn: () => void;
+  onContinue: () => void;
+  onAcknowledgeLoss: () => void;
+  onClearNotification: () => void;
+}
+
+export default function GameScreen({
+  state,
+  onCollect,
+  onDraw,
+  onKeep,
+  onStealColor,
+  onEndTurn,
+  onContinue,
+  onAcknowledgeLoss,
+  onClearNotification,
+}: GameScreenProps) {
+  const currentPlayer = state.players[state.currentPlayerIndex];
+
+  // Check if anyone has matching cards to steal
+  const canStealFromAnyone = state.drawnCard
+    ? state.players.some((p, idx) => 
+        idx !== state.currentPlayerIndex && 
+        findMatchingCards(p.garden, state.drawnCard!.value).length > 0
+      )
+    : false;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-green-800">
+          🌱 Plantas 🌱
+        </h1>
+
+        <Snackbar 
+            message={state.notification?.message || ''}
+            type={state.notification?.type || 'info'}
+            isOpen={!!state.notification?.visible}
+            duration={2500}
+            onClose={onClearNotification}
+        />
+
+        <GameHeader 
+          currentPlayerName={currentPlayer?.name} 
+          deckCount={state.deck.length} 
+        />
+
+        <ActionPanel
+          drawnCard={state.drawnCard}
+          turnPhase={state.turnPhase}
+          canStealFromEveryone={canStealFromAnyone}
+          onCollect={onCollect}
+          onDraw={onDraw}
+          onKeep={onKeep}
+          onSteal={() => onStealColor('')}
+          onContinue={onContinue}
+          onEndTurn={onEndTurn}
+          onAcknowledgeLoss={onAcknowledgeLoss}
+        />
+
+        {/* Players */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-8">
+          {state.players.map((player, index) => (
+            <PlayerGarden
+              key={player.id}
+              player={player}
+              isCurrentPlayer={index === state.currentPlayerIndex}
+              canSteal={
+                state.turnPhase === 'steal' &&
+                state.drawnCard !== null &&
+                index !== state.currentPlayerIndex &&
+                findMatchingCards(player.garden, state.drawnCard.value).length > 0
+              }
+              onStealCards={() => onStealColor('')}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
