@@ -41,7 +41,8 @@ describe('Game Turn Integration', () => {
         // 2. P1 Steals from P2
         state = actionStealCards(state, 'p2');
         expect(state.players[0].garden).toHaveLength(2); // drawn 5 + stolen 5
-        expect(state.players[1].garden).toHaveLength(0);
+        expect(state.players[1].garden).toHaveLength(0); // P2 loses the stolen card
+        expect(state.players[1].garden.some(c => c.value === 5)).toBe(false);
         expect(state.turnPhase).toBe('decide');
 
         // 3. P1 Continues turn
@@ -140,5 +141,22 @@ describe('Game Turn Integration', () => {
         // This confirms the STATE is ready for P2 to act, even if the Hook fails.
         const stateAfterCollect = actionCollectGarden(state);
         expect(stateAfterCollect.turnPhase).toBe('draw');
+    });
+
+    it('should skip collect when starting turn with empty garden', () => {
+        let state = createInitialState();
+        state.currentPlayerIndex = 1; // P2's turn
+        state.players[1].garden = []; // P2 has empty garden
+        state.turnPhase = 'collect';
+        state.isFirstDraw = true;
+        state.deck = [mockCard('d1', 4)];
+
+        // P2 draws directly without collecting (garden was empty)
+        state = actionDrawCard(state);
+
+        expect(state.players[1].savedCards).toHaveLength(0);
+        expect(state.players[1].garden).toHaveLength(1);
+        expect(state.players[1].garden[0].value).toBe(4);
+        expect(state.turnPhase).toBe('decide');
     });
 });

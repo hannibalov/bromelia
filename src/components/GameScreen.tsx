@@ -30,12 +30,15 @@ export default function GameScreen({
   const currentPlayer = state.players[state.currentPlayerIndex];
 
   // Check if anyone has matching cards to steal
-  const canStealFromAnyone = state.drawnCard
-    ? state.players.some((p, idx) => 
-        idx !== state.currentPlayerIndex && 
-        findMatchingCards(p.garden, state.drawnCard!.value).length > 0
+  const validStealTargets = state.drawnCard
+    ? state.players.filter(
+        (p, idx) =>
+          idx !== state.currentPlayerIndex &&
+          findMatchingCards(p.garden, state.drawnCard!.value).length > 0
       )
-    : false;
+    : [];
+  const canStealFromAnyone = validStealTargets.length > 0;
+  const singleStealTargetId = validStealTargets.length === 1 ? validStealTargets[0].id : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 pb-48 md:p-8 md:pb-8">
@@ -65,7 +68,7 @@ export default function GameScreen({
                 index !== state.currentPlayerIndex &&
                 findMatchingCards(player.garden, state.drawnCard.value).length > 0
               }
-              onStealCards={() => onStealColor('')}
+              onStealCards={() => onStealColor(player.id)}
             />
           ))}
         </div>
@@ -76,10 +79,12 @@ export default function GameScreen({
           drawnCard={state.drawnCard}
           turnPhase={state.turnPhase}
           canStealFromEveryone={canStealFromAnyone}
+          singleStealTargetId={singleStealTargetId}
+          gardenEmpty={state.turnPhase === 'collect' && (currentPlayer?.garden.length ?? 0) === 0}
           onCollect={onCollect}
           onDraw={onDraw}
           onKeep={onKeep}
-          onSteal={() => onStealColor('')}
+          onSteal={singleStealTargetId ? () => onStealColor(singleStealTargetId) : undefined}
           onContinue={onContinue}
           onEndTurn={onEndTurn}
           onAcknowledgeLoss={onAcknowledgeLoss}

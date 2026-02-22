@@ -8,25 +8,29 @@ interface ActionPanelProps {
   drawnCard: CardType | null;
   turnPhase: 'collect' | 'draw' | 'steal' | 'decide' | 'lost';
   canStealFromEveryone: boolean;
+  singleStealTargetId?: string | null;
+  gardenEmpty?: boolean;
   onCollect: () => void;
   onDraw: () => void;
   onKeep: () => void;
-  onSteal: () => void;
+  onSteal?: () => void;
   onContinue: () => void;
   onEndTurn: () => void;
   onAcknowledgeLoss: () => void;
 }
 
-function StealAction({ canStealFromEveryone, onSteal, onKeep }: { canStealFromEveryone: boolean, onSteal: () => void, onKeep: () => void }) {
+function StealAction({ canStealFromEveryone, showStealButton, onSteal, onKeep }: { canStealFromEveryone: boolean; showStealButton: boolean; onSteal?: () => void; onKeep: () => void }) {
   return (
     <div className="flex flex-col gap-2">
       {canStealFromEveryone && (
           <p className="text-center text-sm md:text-base mb-1 text-gray-700 font-semibold">
-            ¡Otro jugador tiene esta carta!
+            {showStealButton
+              ? '¡Otro jugador tiene esta carta!'
+              : '¡Elige el jardín del jugador al que quieres robar!'}
           </p>
       )}
       <div className="flex gap-2 w-full">
-        {canStealFromEveryone && (
+        {showStealButton && onSteal && (
             <button
               onClick={onSteal}
               className="flex-1 py-2 md:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-bold text-base md:text-lg shadow-md animate-pulse"
@@ -117,6 +121,8 @@ export default function ActionPanel({
   drawnCard,
   turnPhase,
   canStealFromEveryone,
+  singleStealTargetId,
+  gardenEmpty = false,
   onCollect,
   onDraw,
   onKeep,
@@ -159,7 +165,12 @@ export default function ActionPanel({
           </div>
 
           {turnPhase === 'steal' && (
-            <StealAction canStealFromEveryone={canStealFromEveryone} onSteal={onSteal} onKeep={onKeep} />
+            <StealAction
+              canStealFromEveryone={canStealFromEveryone}
+              showStealButton={!!singleStealTargetId}
+              onSteal={onSteal}
+              onKeep={onKeep}
+            />
           )}
 
           {turnPhase === 'lost' && (
@@ -173,8 +184,11 @@ export default function ActionPanel({
         <DecideAction onDraw={onDraw} onEndTurn={onEndTurn} />
       )}
 
-      {/* Collect Phase */}
-      {!drawnCard && turnPhase === 'collect' && (
+      {/* Collect Phase (skip when garden empty - show draw instead) */}
+      {!drawnCard && turnPhase === 'collect' && gardenEmpty && (
+        <DrawAction onDraw={onDraw} />
+      )}
+      {!drawnCard && turnPhase === 'collect' && !gardenEmpty && (
         <CollectAction onCollect={onCollect} />
       )}
 

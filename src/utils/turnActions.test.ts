@@ -69,6 +69,20 @@ describe('turnActions', () => {
             expect(newState.players[0].savedCards).toHaveLength(0);
             expect(newState.players[0].garden).toHaveLength(2); // old1 + new
         });
+
+        it('should skip collect phase when garden is empty and draw directly', () => {
+            const state = createInitialState();
+            state.players[0].garden = [];
+            state.turnPhase = 'collect';
+            state.deck = [mockCard('d1', 5)];
+
+            const newState = actionDrawCard(state);
+
+            expect(newState.players[0].savedCards).toHaveLength(0);
+            expect(newState.players[0].garden).toHaveLength(1);
+            expect(newState.players[0].garden[0].value).toBe(5);
+            expect(newState.turnPhase).toBe('decide');
+        });
     });
 
     describe('Bust Logic', () => {
@@ -163,6 +177,59 @@ describe('turnActions', () => {
             expect(newState.players[1].garden).toHaveLength(0);
             expect(newState.players[2].garden).toHaveLength(1); // p3 untouched
             expect(newState.players[0].garden.every(c => c.value === 5)).toBe(true);
+        });
+
+        it('should only steal from chosen target - other players keep their matching cards', () => {
+            const state = createInitialState();
+            state.drawnCard = mockCard('drawn', 7);
+            state.players = [
+                { id: 'p1', name: 'P1', isAI: false, garden: [], savedCards: [], score: 0 },
+                { id: 'p2', name: 'P2', isAI: false, garden: [mockCard('p2a', 7), mockCard('p2b', 7)], savedCards: [], score: 0 },
+                { id: 'p3', name: 'P3', isAI: false, garden: [mockCard('p3a', 7)], savedCards: [], score: 0 },
+            ];
+
+            const newState = actionStealCards(state, 'p2');
+
+            // P1 gets drawn card + both 7s from P2
+            expect(newState.players[0].garden).toHaveLength(3);
+            expect(newState.players[1].garden).toHaveLength(0);
+            // P3 keeps their 7
+            expect(newState.players[2].garden).toHaveLength(1);
+            expect(newState.players[2].garden[0].value).toBe(7);
+        });
+
+        it('should add drawn card and stolen cards to stealer, remove from target', () => {
+            const drawnCard = mockCard('drawn', 5);
+            const stolenCard = mockCard('p2c1', 5);
+            const state = createInitialState();
+            state.drawnCard = drawnCard;
+            state.players[1].garden = [stolenCard];
+
+            const newState = actionStealCards(state, 'p2');
+
+            expect(newState.players[0].garden).toContainEqual(drawnCard);
+            expect(newState.players[0].garden).toContainEqual(stolenCard);
+            expect(newState.players[1].garden).not.toContainEqual(stolenCard);
+        });
+
+        it('target player loses all stolen cards - has none of that value left', () => {
+            const stolen1 = mockCard('p2a', 8);
+            const stolen2 = mockCard('p2b', 8);
+            const keepCard = mockCard('p2c', 3);
+            const state = createInitialState();
+            state.drawnCard = mockCard('drawn', 8);
+            state.players[1].garden = [stolen1, stolen2, keepCard];
+
+            const newState = actionStealCards(state, 'p2');
+
+            expect(newState.players[0].garden).toHaveLength(3); // drawn + 2 stolen
+            expect(newState.players[0].garden).toContainEqual(stolen1);
+            expect(newState.players[0].garden).toContainEqual(stolen2);
+            // Target has lost both 8s
+            expect(newState.players[1].garden).not.toContainEqual(stolen1);
+            expect(newState.players[1].garden).not.toContainEqual(stolen2);
+            expect(newState.players[1].garden).toHaveLength(1);
+            expect(newState.players[1].garden[0]).toEqual(keepCard);
         });
     });
 

@@ -6,10 +6,14 @@ import { executeSteal, canStealFromAnyone } from './stealLogic';
  * High-level action for drawing a card.
  */
 export function actionDrawCard(state: GameState): GameState {
-    // If the player is still in collect phase, they MUST collect first
+    // If the player is in collect phase, they must collect first (unless garden is empty)
     if (state.turnPhase === 'collect') {
+        const currentPlayer = state.players[state.currentPlayerIndex];
+        if (currentPlayer.garden.length === 0) {
+            // Skip collect - garden is empty, go directly to draw
+            return actionDrawCard({ ...state, turnPhase: 'draw', isFirstDraw: true });
+        }
         const collectedState = actionCollectGarden(state);
-        // After collecting, we immediately proceed to draw
         return actionDrawCard(collectedState);
     }
 

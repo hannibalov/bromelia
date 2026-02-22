@@ -181,7 +181,11 @@ export function useGame() {
             if (processingAiAction.current) return;
 
             if (state.turnPhase === 'collect' && !state.drawnCard) {
-                performAction('está recogiendo su jardín...', collectGarden);
+                if (currentPlayer.garden.length === 0) {
+                    performAction('va a sacar una carta...', drawCard);
+                } else {
+                    performAction('está recogiendo su jardín...', collectGarden);
+                }
             } else if (state.turnPhase === 'draw' && !state.drawnCard) {
                 performAction('va a sacar una carta...', drawCard);
             } else if (state.turnPhase === 'steal' && state.drawnCard) {
