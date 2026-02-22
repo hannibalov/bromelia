@@ -33,7 +33,11 @@ export default function HojasPage() {
   if (state.gamePhase === 'finished') {
     return (
       <FinishedScreen
-        players={state.players as any}
+        players={state.players.map(p => ({
+          ...p,
+          garden: [],
+          savedCards: []
+        }))}
         onRestart={() => window.location.reload()}
       />
     );

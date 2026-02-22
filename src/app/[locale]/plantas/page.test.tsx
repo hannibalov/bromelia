@@ -63,19 +63,19 @@ describe('Plantas Game Page Rendering', () => {
   });
 
   it('should render SetupScreen when gamePhase is setup', () => {
-    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'setup' as const } } as any);
+    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'setup' as const } } as unknown as ReturnType<typeof useGame>);
     render(<PlantasPage />);
     expect(screen.getByText(/Finalizar Configuración/i)).toBeInTheDocument();
   });
 
   it('should render GameScreen when gamePhase is playing', () => {
-    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'playing' as const } } as any);
+    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'playing' as const } } as unknown as ReturnType<typeof useGame>);
     render(<PlantasPage />);
     expect(screen.getByText(/Turno de/i)).toBeInTheDocument();
   });
 
   it('should render FinishedScreen when gamePhase is finished', () => {
-    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'finished' as const } } as any);
+    vi.mocked(useGame).mockReturnValue({ ...mockActions, state: { ...mockState, gamePhase: 'finished' as const } } as unknown as ReturnType<typeof useGame>);
     render(<PlantasPage />);
     expect(screen.getByText(/Fin del Juego/i)).toBeInTheDocument();
   });

@@ -71,7 +71,7 @@ export default function HojasGameScreen({ state, onPickLeaf, onClearNotification
               }}
             >
               <Image
-                src={`/leaves/${leaf.type}/${leaf.color}.png`} 
+                src={`/hojas/${leaf.type}/${leaf.color}.png`} 
                 alt={`${leaf.color} ${leaf.type}`}
                 fill
                 className="object-contain pointer-events-none"

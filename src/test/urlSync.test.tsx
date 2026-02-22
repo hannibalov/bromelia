@@ -53,8 +53,8 @@ describe('Game ID and URL Synchronization', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as any);
-    vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
+    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as unknown as ReturnType<typeof useRouter>);
+    vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as unknown as ReturnType<typeof useSearchParams>);
   });
 
   it('should update the URL when gameId is generated', async () => {

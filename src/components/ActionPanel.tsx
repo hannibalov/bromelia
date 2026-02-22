@@ -1,7 +1,10 @@
+import Image from 'next/image';
 import Card from './Card';
 import { type Card as CardType } from '@/types/game';
 
 interface ActionPanelProps {
+  currentPlayerName?: string;
+  deckCount: number;
   drawnCard: CardType | null;
   turnPhase: 'collect' | 'draw' | 'steal' | 'decide' | 'lost';
   canStealFromEveryone: boolean;
@@ -15,6 +18,8 @@ interface ActionPanelProps {
 }
 
 export default function ActionPanel({
+  currentPlayerName,
+  deckCount,
   drawnCard,
   turnPhase,
   canStealFromEveryone,
@@ -27,7 +32,28 @@ export default function ActionPanel({
   onAcknowledgeLoss,
 }: ActionPanelProps) {
   return (
-    <div className="mb-6">
+    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-sm shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.1)] z-40 rounded-t-3xl border-t border-gray-100 md:relative md:bg-transparent md:p-0 md:shadow-none md:rounded-none md:border-none md:z-auto md:mb-6">
+      
+      {/* Turn Header */}
+      <div className="flex justify-between items-center mb-4 md:bg-white md:p-3 md:rounded-xl md:shadow-sm">
+        <div>
+          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Turno de</p>
+          <p className="text-lg md:text-xl font-bold text-green-700">{currentPlayerName}</p>
+        </div>
+        <div className="flex items-center gap-2">
+            <div className="relative w-8 h-12 md:w-16 md:h-24 shadow-sm rounded-md md:rounded-lg overflow-hidden shrink-0">
+                <Image 
+                    src="/plantas/back.png" 
+                    alt="Mazo" 
+                    fill
+                    className="object-cover"
+                />
+            </div>
+            <div className="bg-red-600 text-white w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full font-bold text-xs md:text-sm border-2 border-white shadow-sm shrink-0">
+                {deckCount}
+            </div>
+        </div>
+      </div>
       {/* Drawn Card Section */}
       {drawnCard && (
         <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl shadow-md p-4 mb-4 border-2 border-yellow-400">

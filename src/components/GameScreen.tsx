@@ -1,5 +1,4 @@
 import { type GameState } from '@/types/game';
-import GameHeader from './GameHeader';
 import ActionPanel from './ActionPanel';
 import PlayerGarden from './PlayerGarden';
 import Snackbar from './Snackbar';
@@ -39,7 +38,7 @@ export default function GameScreen({
     : false;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 pb-48 md:p-8 md:pb-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-green-800">
           🌱 Plantas 🌱
@@ -53,26 +52,8 @@ export default function GameScreen({
             onClose={onClearNotification}
         />
 
-        <GameHeader 
-          currentPlayerName={currentPlayer?.name} 
-          deckCount={state.deck.length} 
-        />
-
-        <ActionPanel
-          drawnCard={state.drawnCard}
-          turnPhase={state.turnPhase}
-          canStealFromEveryone={canStealFromAnyone}
-          onCollect={onCollect}
-          onDraw={onDraw}
-          onKeep={onKeep}
-          onSteal={() => onStealColor('')}
-          onContinue={onContinue}
-          onEndTurn={onEndTurn}
-          onAcknowledgeLoss={onAcknowledgeLoss}
-        />
-
         {/* Players */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-8 mb-6">
           {state.players.map((player, index) => (
             <PlayerGarden
               key={player.id}
@@ -88,6 +69,21 @@ export default function GameScreen({
             />
           ))}
         </div>
+
+        <ActionPanel
+          currentPlayerName={currentPlayer?.name}
+          deckCount={state.deck.length}
+          drawnCard={state.drawnCard}
+          turnPhase={state.turnPhase}
+          canStealFromEveryone={canStealFromAnyone}
+          onCollect={onCollect}
+          onDraw={onDraw}
+          onKeep={onKeep}
+          onSteal={() => onStealColor('')}
+          onContinue={onContinue}
+          onEndTurn={onEndTurn}
+          onAcknowledgeLoss={onAcknowledgeLoss}
+        />
       </div>
     </div>
   );

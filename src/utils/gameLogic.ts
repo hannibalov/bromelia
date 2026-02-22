@@ -14,7 +14,7 @@ export function createDeck(): Card[] {
             deck.push({
                 id: `card-${value}-${copy}`,
                 value: value as CardValue,
-                imageUrl: `/cards/card_${value}.png`,
+                imageUrl: `/plantas/card_${value}.png`,
             });
         }
     }

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { type Player as PlayerType } from '@/types/game';
 import Card from './Card';
 import { groupGardenCards } from '@/utils/gameLogic';
@@ -16,9 +17,22 @@ export default function PlayerGarden({
   canSteal = false 
 }: PlayerGardenProps) {
   const groupedCards = groupGardenCards(player.garden);
+  const gardenRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isCurrentPlayer && gardenRef.current) {
+      // Check if we are on a mobile device (using window width < 768px for md breakpoint)
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          gardenRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    }
+  }, [isCurrentPlayer]);
 
   return (
     <div
+      ref={gardenRef}
       className={`
         p-3 md:p-4 rounded-xl border-2 transition-all duration-300
         ${isCurrentPlayer 

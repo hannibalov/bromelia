@@ -59,11 +59,11 @@ export default function SetupScreen({
             ) : (
                 players.map((player, index) => (
                     <div key={index} className="flex items-center justify-between mb-2 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <span className="text-lg font-medium">{player.name}</span>
+                      <div className="flex items-center gap-4 flex-1 min-w-0 mr-2">
+                        <span className="text-lg font-medium truncate">{player.name}</span>
                         <button
                           onClick={() => toggleAI(index)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition ${
+                          className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition ${
                             player.isAI 
                             ? 'bg-purple-100 text-purple-700 border-2 border-purple-200' 
                             : 'bg-blue-100 text-blue-700 border-2 border-blue-200'
