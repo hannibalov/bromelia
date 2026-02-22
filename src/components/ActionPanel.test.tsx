@@ -178,4 +178,83 @@ describe('ActionPanel', () => {
       expect(onAcknowledgeLoss).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('When AI is playing (isCurrentPlayerAI)', () => {
+    it('hides all action buttons in collect phase', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="collect"
+          gardenEmpty={false}
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.getByText('Turn of')).toBeInTheDocument();
+      expect(screen.getByText('Alice')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /collect plants/i })).not.toBeInTheDocument();
+    });
+
+    it('hides all action buttons in draw phase', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="draw"
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.queryByRole('button', { name: /draw first card/i })).not.toBeInTheDocument();
+    });
+
+    it('hides all action buttons in decide phase', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="decide"
+          drawnCard={null}
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.queryByText('What do you want to do?')).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /draw another/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /end turn/i })).not.toBeInTheDocument();
+    });
+
+    it('hides Keep Card button in steal phase', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="steal"
+          drawnCard={mockCard}
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.queryByRole('button', { name: /keep card/i })).not.toBeInTheDocument();
+    });
+
+    it('hides lost message and Pass Turn button in lost phase', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="lost"
+          drawnCard={mockCard}
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.queryByText(/turn lost!/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /pass turn/i })).not.toBeInTheDocument();
+    });
+
+    it('still shows turn header when AI is playing', () => {
+      render(
+        <ActionPanel
+          {...defaultProps}
+          turnPhase="collect"
+          isCurrentPlayerAI={true}
+        />
+      );
+      expect(screen.getByText('Turn of')).toBeInTheDocument();
+      expect(screen.getByText('Alice')).toBeInTheDocument();
+      expect(screen.getByText('42')).toBeInTheDocument();
+    });
+  });
 });

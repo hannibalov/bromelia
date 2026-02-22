@@ -19,6 +19,7 @@ interface ActionPanelProps {
   drawnCard: CardType | null;
   turnPhase: 'collect' | 'draw' | 'steal' | 'decide' | 'lost';
   gardenEmpty?: boolean;
+  isCurrentPlayerAI?: boolean;
   onCollect: () => void;
   onDraw: () => void;
   onKeep: () => void;
@@ -120,6 +121,7 @@ export default function ActionPanel({
   drawnCard,
   turnPhase,
   gardenEmpty = false,
+  isCurrentPlayerAI = false,
   onCollect,
   onDraw,
   onKeep,
@@ -129,6 +131,7 @@ export default function ActionPanel({
 }: ActionPanelProps) {
   const t = useI18n();
   const isStealPhase = turnPhase === 'steal' && drawnCard;
+  const showActions = !isCurrentPlayerAI;
 
   return (
     <div
@@ -172,9 +175,11 @@ export default function ActionPanel({
           {isStealPhase ? (
             <>
               <Card card={drawnCard} className="w-12 h-16 md:w-16 md:h-24 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <StealAction onKeep={onKeep} />
-              </div>
+              {showActions && (
+                <div className="flex-1 min-w-0">
+                  <StealAction onKeep={onKeep} />
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -185,7 +190,7 @@ export default function ActionPanel({
                 <Card card={drawnCard} className="w-20 h-28 sm:w-24 sm:h-32 md:w-28 md:h-36" />
               </div>
 
-              {turnPhase === 'lost' && (
+              {showActions && turnPhase === 'lost' && (
                 <LostAction onAcknowledgeLoss={onAcknowledgeLoss} />
               )}
             </>
@@ -194,20 +199,20 @@ export default function ActionPanel({
       )}
 
       {/* Decision Actions (visible when not drawing/stealing) */}
-      {!drawnCard && turnPhase === 'decide' && (
+      {showActions && !drawnCard && turnPhase === 'decide' && (
         <DecideAction onDraw={onDraw} onEndTurn={onEndTurn} />
       )}
 
       {/* Collect Phase (skip when garden empty - show draw instead) */}
-      {!drawnCard && turnPhase === 'collect' && gardenEmpty && (
+      {showActions && !drawnCard && turnPhase === 'collect' && gardenEmpty && (
         <DrawAction onDraw={onDraw} />
       )}
-      {!drawnCard && turnPhase === 'collect' && !gardenEmpty && (
+      {showActions && !drawnCard && turnPhase === 'collect' && !gardenEmpty && (
         <CollectAction onCollect={onCollect} />
       )}
 
       {/* Draw Phase (initial draw) */}
-      {!drawnCard && turnPhase === 'draw' && (
+      {showActions && !drawnCard && turnPhase === 'draw' && (
         <DrawAction onDraw={onDraw} />
       )}
     </div>

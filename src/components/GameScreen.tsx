@@ -77,6 +77,7 @@ export default function GameScreen({
           drawnCard={state.drawnCard}
           turnPhase={state.turnPhase}
           gardenEmpty={state.turnPhase === 'collect' && (currentPlayer?.garden.length ?? 0) === 0}
+          isCurrentPlayerAI={currentPlayer?.isAI ?? false}
           onCollect={onCollect}
           onDraw={onDraw}
           onKeep={onKeep}
