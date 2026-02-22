@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { processSelection, canPickLeaf } from '@/utils/hojasLogic';
-import { HojasGameState, Leaf } from '@/types/hojas';
+import type { HojasGameState, Leaf } from '@/types/hojas';
 
 const createMockLeaf = (id: string, color: Leaf['color'], type: Leaf['type'], zIndex: number): Leaf => ({
   id, color, type, x: 0, y: 0, rotation: 0, zIndex

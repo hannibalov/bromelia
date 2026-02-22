@@ -1,4 +1,4 @@
-import { type Card, type CardValue } from '@/types/game';
+import type { Card, CardValue } from '@/types/game';
 
 export const MAX_CARD = 10;
 export const CARDS_PER_VALUE = 20;

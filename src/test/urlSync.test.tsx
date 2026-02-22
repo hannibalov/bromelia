@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import PlantasPage from '../app/[locale]/plantas/page';
 import { useGame } from '../hooks/useGame';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -10,7 +10,7 @@ vi.mock('../../locales/client', () => ({
   useScopedI18n: () => (key: string) => key,
   useChangeLocale: () => vi.fn(),
   useCurrentLocale: () => 'es',
-  I18nProviderClient: ({ children }: any) => <>{children}</>,
+  I18nProviderClient: ({ children }: { children: unknown }) => <>{children}</>,
 }));
 
 // Mock useGame hook
@@ -53,8 +53,8 @@ describe('Game ID and URL Synchronization', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as any).mockReturnValue({ push: mockPush });
-    (useSearchParams as any).mockReturnValue(mockSearchParams);
+    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as any);
+    vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
   });
 
   it('should update the URL when gameId is generated', async () => {
@@ -62,12 +62,13 @@ describe('Game ID and URL Synchronization', () => {
     // Initially gameId is null, then it becomes 'test-uuid-123'
     const stateWithId = { ...mockState, gameId, gamePhase: 'playing' };
     
-    (useGame as any).mockReturnValue({ ...mockActions, state: stateWithId });
+    (useGame as unknown as { mockReturnValue: (v: unknown) => void }).mockReturnValue({ ...mockActions, state: stateWithId });
 
     render(<PlantasPage />);
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith(expect.stringContaining(`id=${gameId}`));
+      const lastCall = mockPush.mock.calls[mockPush.mock.calls.length - 1];
+      expect(lastCall[0]).toContain(`id=${gameId}`);
     });
   });
 });

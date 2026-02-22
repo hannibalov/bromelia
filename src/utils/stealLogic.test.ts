@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { executeSteal, canStealFromAnyone } from './stealLogic';
-import { type Player, type Card } from '@/types/game';
+import type { Player, Card, CardValue } from '@/types/game';
 
 describe('stealLogic', () => {
-    const mockCard = (id: string, value: number): Card => ({ id, value: value as any, imageUrl: '' });
+    const mockCard = (id: string, value: CardValue): Card => ({ id, value, imageUrl: '' });
     const mockPlayer = (id: string, garden: Card[]): Player => ({
         id, name: '', isAI: false, garden, savedCards: [], score: 0
     });

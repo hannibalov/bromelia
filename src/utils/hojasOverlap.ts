@@ -1,4 +1,4 @@
-import { Leaf } from '@/types/hojas';
+import type { Leaf } from '@/types/hojas';
 
 // Approximate size of a leaf for overlap calculations
 const LEAF_WIDTH = 15; // Percent of table width

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { isLeafCovered } from '@/utils/hojasOverlap';
-import { Leaf } from '@/types/hojas';
+import type { Leaf } from '@/types/hojas';
 
 describe('Hojas Overlap Logic', () => {
   const leafBase: Leaf = {

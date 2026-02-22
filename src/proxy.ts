@@ -1,5 +1,5 @@
 import { createI18nMiddleware } from 'next-international/middleware'
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 const I18nMiddleware = createI18nMiddleware({
     locales: ['en', 'es'],
@@ -13,5 +13,5 @@ export function proxy(request: NextRequest) {
 export default proxy;
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico)$).*)']
 }

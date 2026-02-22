@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useCallback, useEffect, useRef } from 'react';
-import { HojasGameState, HojasGameAction, HojasPlayer, Leaf } from '@/types/hojas';
+import type { HojasGameState, HojasGameAction, HojasPlayer } from '@/types/hojas';
 import { createHojasDeck, processSelection, calculateWinner } from '@/utils/hojasLogic';
 
 const initialState: HojasGameState = {
@@ -114,8 +114,6 @@ export function useHojasGame() {
             processingAiAction.current = true;
 
             setTimeout(() => {
-                // AI selects a random leaf that is not covered
-                const availableLeaves = state.leaves.filter(l => !state.leaves.some(other => other.zIndex > l.zIndex && /* simple check for AI */ false));
                 // Actually use the logic
                 const pickableLeaves = state.leaves.filter(l => {
                     // Check if covered

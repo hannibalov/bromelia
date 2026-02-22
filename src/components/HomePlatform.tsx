@@ -25,6 +25,14 @@ export default function HomePlatform() {
       href: '/hojas',
       available: true,
     },
+    {
+      id: 'virus',
+      name: scopedT('virus.name'),
+      emoji: '🦠',
+      description: scopedT('virus.description'),
+      href: '/virus',
+      available: true,
+    },
   ];
 
   return (

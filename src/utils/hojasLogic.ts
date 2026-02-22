@@ -1,4 +1,4 @@
-import { Leaf, HojasGameState, HojasPlayer } from '@/types/hojas';
+import type { Leaf, HojasGameState, HojasPlayer } from '@/types/hojas';
 import { isLeafCovered } from './hojasOverlap';
 
 export const TOTAL_LEAVES = 60;

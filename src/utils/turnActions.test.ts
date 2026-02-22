@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { actionDrawCard, actionStealCards, actionKeepCard, actionEndTurn } from './turnActions';
 import { createDeck, MAX_CARD } from './gameLogic';
-import { type GameState, type Card } from '@/types/game';
+import type { GameState, Card, CardValue } from '@/types/game';
 
 describe('turnActions', () => {
-    const mockCard = (id: string, value: number): Card => ({ id, value: value as any, imageUrl: '' });
+    const mockCard = (id: string, value: CardValue): Card => ({ id, value, imageUrl: '' });
 
     describe('Deck and Constants', () => {
         it('should have MAX_CARD as 10', () => {

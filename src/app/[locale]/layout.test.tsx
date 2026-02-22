@@ -28,7 +28,6 @@ describe('Localized RootLayout', () => {
     // Mock the params as a promise since it's an async layout in Next.js 15
     const params = Promise.resolve({ locale: 'en' });
     
-    // @ts-ignore - Next.js 15 layout params type complexity
     const { container } = render(await RootLayout({ 
       children: <div>Content</div>, 
       params 
@@ -42,7 +41,6 @@ describe('Localized RootLayout', () => {
   it('renders children correctly', async () => {
     const params = Promise.resolve({ locale: 'es' });
     
-    // @ts-ignore
     const { getByText } = render(await RootLayout({ 
       children: <div>Test Content</div>, 
       params 

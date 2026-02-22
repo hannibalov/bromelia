@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useI18n } from '../../locales/client';
+import { useI18n, useCurrentLocale } from '@/../locales/client';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function NavigationBar() {
   const pathname = usePathname();
   const t = useI18n();
+  const locale = useCurrentLocale();
   const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -40,7 +41,7 @@ export default function NavigationBar() {
   }, [isMobile]);
 
   // Hide the navigation bar on the home page (considering locale prefix)
-  const isHomePage = pathname === '/es' || pathname === '/en' || pathname === '/';
+  const isHomePage = pathname === `/${locale}` || pathname === '/';
   if (isHomePage) {
     return null;
   }
@@ -55,13 +56,13 @@ export default function NavigationBar() {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 z-50 w-full bg-white/70 backdrop-blur-md border-b border-green-100/50 transition-all duration-300 transform ${visibilityClasses}`}
+      className={`fixed top-0 left-0 z-[60] w-full bg-white/70 backdrop-blur-md border-b border-green-100/50 transition-all duration-300 transform ${visibilityClasses}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14 items-center">
           <div className="flex items-center">
             <Link 
-              href="/"
+              href={`/${locale}`}
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-green-50 transition-colors group"
               aria-label={t('nav.back')}
             >

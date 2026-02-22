@@ -1,4 +1,4 @@
-import { type Card, type Player } from '@/types/game';
+import type { Card, Player, CardValue } from '@/types/game';
 import { findMatchingCards } from './gameLogic';
 
 /**
@@ -8,14 +8,14 @@ import { findMatchingCards } from './gameLogic';
 export function executeSteal(
     players: Player[],
     currentPlayerIndex: number,
-    cardValue: number
+    cardValue: CardValue
 ): { updatedPlayers: Player[]; stolenCards: Card[] } {
     const stolenCards: Card[] = [];
 
     const updatedPlayers = players.map((p, idx) => {
         if (idx === currentPlayerIndex) return p;
 
-        const matches = findMatchingCards(p.garden, cardValue as any);
+        const matches = findMatchingCards(p.garden, cardValue);
         if (matches.length > 0) {
             stolenCards.push(...matches);
             return {
@@ -35,7 +35,7 @@ export function executeSteal(
 export function canStealFromAnyone(
     players: Player[],
     currentPlayerIndex: number,
-    cardValue: number
+    cardValue: CardValue
 ): boolean {
     return players.some((p, idx) =>
         idx !== currentPlayerIndex &&

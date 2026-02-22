@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { performDraw, checkBust, actionCollectGarden } from './drawLogic';
-import { type GameState, type Card, type Player } from '@/types/game';
+import type { GameState, Card, Player, CardValue } from '@/types/game';
 
 describe('drawLogic', () => {
-    const mockCard = (id: string, value: number): Card => ({ id, value: value as any, imageUrl: '' });
+    const mockCard = (id: string, value: CardValue): Card => ({ id, value, imageUrl: '' });
 
     const createBaseState = (): GameState => ({
         gameId: null,
@@ -17,6 +17,7 @@ describe('drawLogic', () => {
         turnPhase: 'collect',
         drawnCard: null,
         isFirstDraw: true,
+        notification: null,
     });
 
     it('should secure garden when actionCollectGarden is called', () => {

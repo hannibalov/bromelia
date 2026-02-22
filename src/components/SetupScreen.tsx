@@ -39,13 +39,13 @@ export default function SetupScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-4 sm:p-8 pt-20 sm:pt-24">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-6xl font-bold text-center mb-8 text-green-800">
+        <h1 className="text-4xl sm:text-6xl font-bold text-center mb-6 sm:mb-8 text-green-800">
           {title}
         </h1>
         
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 mb-6">
           <h2 className="text-3xl font-bold mb-6 text-gray-800">{displaySubtitle}</h2>
           
           <div className="mb-6">

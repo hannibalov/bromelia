@@ -49,5 +49,5 @@ export interface GameAction {
     | 'AI_MOVE_DELAY'
     | 'SET_NOTIFICATION'
     | 'CLEAR_NOTIFICATION';
-    payload?: any;
+    payload?: unknown;
 }

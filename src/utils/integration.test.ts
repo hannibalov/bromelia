@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { actionDrawCard, actionStealCards, actionKeepCard, actionEndTurn, actionContinueTurn, actionAcknowledgeLoss } from './turnActions';
 import { actionCollectGarden } from './drawLogic';
-import { type GameState, type Card } from '@/types/game';
+import type { GameState, Card, CardValue } from '@/types/game';
 
 describe('Game Turn Integration', () => {
-    const mockCard = (id: string, value: number): Card => ({ id, value: value as any, imageUrl: '' });
+    const mockCard = (id: string, value: CardValue): Card => ({ id, value, imageUrl: '' });
 
     const createInitialState = (): GameState => ({
         gameId: null,

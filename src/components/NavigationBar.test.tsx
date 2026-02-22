@@ -7,7 +7,7 @@ vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
 }));
 
-// Mock useI18n from locales/client
+// Mock useI18n and useCurrentLocale from locales/client
 vi.mock('../../locales/client', () => ({
   useI18n: () => (key: string) => {
     const messages: Record<string, string> = {
@@ -15,6 +15,7 @@ vi.mock('../../locales/client', () => ({
     };
     return messages[key] || key;
   },
+  useCurrentLocale: vi.fn(() => 'es')
 }));
 
 // Mock LanguageSwitcher
@@ -24,40 +25,43 @@ vi.mock('./LanguageSwitcher', () => ({
 
 // Mock next/link
 vi.mock('next/link', () => ({
-  default: ({ children, href, 'aria-label': ariaLabel, ...props }: any) => (
+  default: ({ children, href, 'aria-label': ariaLabel, ...props }: { children: React.ReactNode, href: string, 'aria-label'?: string }) => (
     <a href={href} aria-label={ariaLabel} {...props}>{children}</a>
   ),
 }));
 
 import { usePathname } from 'next/navigation';
+import { useCurrentLocale } from '../../locales/client';
 
 describe('NavigationBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Default to desktop
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+    vi.mocked(usePathname).mockReturnValue('/plantas');
+    vi.mocked(useCurrentLocale).mockReturnValue('es');
   });
 
   it('should not render on the home page (root)', () => {
-    (usePathname as any).mockReturnValue('/');
+    vi.mocked(usePathname).mockReturnValue('/');
     const { container } = render(<NavigationBar />);
     expect(container.firstChild).toBeNull();
   });
 
   it('should not render on the home page with locale es', () => {
-    (usePathname as any).mockReturnValue('/es');
+    vi.mocked(usePathname).mockReturnValue('/es');
     const { container } = render(<NavigationBar />);
     expect(container.firstChild).toBeNull();
   });
 
   it('should not render on the home page with locale en', () => {
-    (usePathname as any).mockReturnValue('/en');
+    vi.mocked(usePathname).mockReturnValue('/en');
+    vi.mocked(useCurrentLocale).mockReturnValue('en');
     const { container } = render(<NavigationBar />);
     expect(container.firstChild).toBeNull();
   });
 
   it('should be hidden on desktop by default', () => {
-    (usePathname as any).mockReturnValue('/plantas');
     render(<NavigationBar />);
     
     const nav = screen.getByRole('navigation');
@@ -66,7 +70,7 @@ describe('NavigationBar', () => {
   });
 
   it('should reveal on desktop when mouse is near the top', () => {
-    (usePathname as any).mockReturnValue('/plantas');
+    vi.mocked(usePathname).mockReturnValue('/plantas');
     render(<NavigationBar />);
     
     const nav = screen.getByRole('navigation');
@@ -83,7 +87,7 @@ describe('NavigationBar', () => {
   });
 
   it('should be always visible on mobile', () => {
-    (usePathname as any).mockReturnValue('/plantas');
+    vi.mocked(usePathname).mockReturnValue('/plantas');
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 500 });
     
     render(<NavigationBar />);
@@ -94,7 +98,7 @@ describe('NavigationBar', () => {
   });
 
   it('should show translated label and language switcher', () => {
-    (usePathname as any).mockReturnValue('/hojas');
+    vi.mocked(usePathname).mockReturnValue('/hojas');
     render(<NavigationBar />);
     
     // Check for the "Back to Menu" text (mocked translation)
@@ -106,6 +110,6 @@ describe('NavigationBar', () => {
     
     // Check for the link by its accessible name (which comes from aria-label)
     const link = screen.getByRole('link', { name: 'Back to Menu' });
-    expect(link.getAttribute('href')).toBe('/');
+    expect(link.getAttribute('href')).toBe('/es');
   });
 });
